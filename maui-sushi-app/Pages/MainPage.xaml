@@ -15,11 +15,7 @@
         </DataTemplate>
         <DataTemplate x:Key="productTemplate">
             <ViewCell>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <Grid ColumnDefinitions="*,*">
                     <Label Text="{Binding Name}" Margin="0,0,5,0" />
                     <Label Grid.Column="1" Text="{Binding Category}" Margin="0,0,5,0" />
                 </Grid>
@@ -27,13 +23,8 @@
         </DataTemplate>
     </ContentPage.Resources>
     <Grid HorizontalOptions="Fill"
-          VerticalOptions="Fill">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+          VerticalOptions="Fill"
+          RowDefinitions="Auto,*,Auto,*">
         <Label    Text="Select Category"
                   FontAttributes="Bold"/>
         <ListView Grid.Row="1"
