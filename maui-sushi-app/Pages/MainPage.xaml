@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:maui_sushi_app.ViewModels"
+             xmlns:pages="clr-namespace:maui_sushi_app.Pages"
+             x:Class="maui_sushi_app.MainPage">
+    <ContentPage.BindingContext>
+        <pages:MainViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <DataTemplate x:Key="categoryTemplate">
+            <ViewCell>
+                 <Label Text="{Binding .}" Margin="0,0,5,0" />
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="productTemplate">
+            <ViewCell>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="{Binding Name}" Margin="0,0,5,0" />
+                    <Label Grid.Column="1" Text="{Binding Category}" Margin="0,0,5,0" />
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+    <Grid HorizontalOptions="Fill"
+          VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label    Text="Select Category"
+                  FontAttributes="Bold"/>
+        <ListView Grid.Row="1"
+                  ItemTemplate="{StaticResource categoryTemplate}"
+                  ItemsSource="{Binding Categories}"
+                  SelectedItem="{Binding SelectedCategory,Mode=TwoWay}"/>
+        <Label    Grid.Row="2"
+                  Text="Products"
+                  FontAttributes="Bold"/>
+        <ListView Grid.Row="3"
+                  ItemTemplate="{StaticResource productTemplate}"
+                  ItemsSource="{Binding Products}"/>
+    </Grid>
+</ContentPage>
