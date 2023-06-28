@@ -37,31 +37,48 @@ namespace maui_sushi_app.Pages
                 if (selectedCategory == value) return;
                 selectedCategory = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCategory)));
-                SelectedProducts = GetProductsByCategory(SelectedCategory);
+                Products = GetProductsByCategory(SelectedCategory);
+                ProductsFocused = true;
+                SelectedProduct = Products.Count > 0 ? Products[Products.Count - 1] : null;
             }
         }
 
-        private ObservableCollection<ProductViewModel> products;
+        private ObservableCollection<ProductViewModel> allProducts;
 
+        public ObservableCollection<ProductViewModel> AllProducts
+        {
+            get => allProducts;
+            set
+            {
+                if (allProducts == value) return;
+                allProducts = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AllProducts)));
+            }
+        }
+
+        private ObservableCollection<ProductViewModel> products = new ObservableCollection<ProductViewModel>();
         public ObservableCollection<ProductViewModel> Products
         {
             get => products;
             set
             {
-                if (products == value) return;
+                SelectedProduct = null;
                 products = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Products)));
             }
         }
 
-        private ObservableCollection<ProductViewModel> selectedProducts = new ObservableCollection<ProductViewModel>();
-        public ObservableCollection<ProductViewModel> SelectedProducts
+#nullable enable
+        private ProductViewModel? selectedProduct = null;
+        public ProductViewModel? SelectedProduct
+#nullable disable
         {
-            get => selectedProducts;
+            get => selectedProduct;
             set
             {
-                selectedProducts = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedProducts)));
+                if (selectedProduct == value) return;
+                selectedProduct = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedProduct)));
             }
         }
 
@@ -71,19 +88,19 @@ namespace maui_sushi_app.Pages
         {
             if ((category is null) || (category == "All"))
             {
-                return products;
+                return allProducts;
             }
             return new ObservableCollection<ProductViewModel>(
-                products.Where(p => p.Category == category)
+                allProducts.Where(p => p.Category == category)
             );
         }
 
-        public string ProductsAsText
+        public string AllProductsAsText
         {
-            get => JsonSerializer.Serialize<List<ProductViewModel>>(Products.ToList());
+            get => JsonSerializer.Serialize<List<ProductViewModel>>(AllProducts.ToList());
             set
             {
-                Products = new ObservableCollection<ProductViewModel>(JsonSerializer.Deserialize<List<ProductViewModel>>(value));
+                AllProducts = new ObservableCollection<ProductViewModel>(JsonSerializer.Deserialize<List<ProductViewModel>>(value));
             }
         }
 
@@ -108,7 +125,7 @@ namespace maui_sushi_app.Pages
                 //,"Poke Bowl & Chirashi"
             }));
 
-            ProductsAsText =
+            AllProductsAsText =
 """
 [
     {"Category":"Platter","Name":"Chef's Favourite Platter"},
