@@ -7,7 +7,94 @@ namespace maui_sushi_app.Pages
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<string> categories = new ObservableCollection<string>(
+        public MainViewModel()
+        {
+            Reset();
+        }
+
+        private ObservableCollection<string> categories;
+
+        public ObservableCollection<string> Categories
+        {
+            get => categories;
+            set
+            {
+                if (categories == value) return;
+                categories = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Categories)));
+                SelectedCategory = null;
+            }
+        }
+
+#nullable enable
+        private string? selectedCategory = null;
+        public string? SelectedCategory
+#nullable disable
+        {
+            get => selectedCategory;
+            set
+            {
+                if (selectedCategory == value) return;
+                selectedCategory = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCategory)));
+                SelectedProducts = GetProductsByCategory(SelectedCategory);
+            }
+        }
+
+        private ObservableCollection<ProductViewModel> products;
+
+        public ObservableCollection<ProductViewModel> Products
+        {
+            get => products;
+            set
+            {
+                if (products == value) return;
+                products = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Products)));
+            }
+        }
+
+        private ObservableCollection<ProductViewModel> selectedProducts = new ObservableCollection<ProductViewModel>();
+        public ObservableCollection<ProductViewModel> SelectedProducts
+        {
+            get => selectedProducts;
+            set
+            {
+                selectedProducts = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedProducts)));
+            }
+        }
+
+#nullable enable
+        public ObservableCollection<ProductViewModel> GetProductsByCategory(string? category)
+#nullable disable
+        {
+            if ((category is null) || (category == "All"))
+            {
+                return products;
+            }
+            return new ObservableCollection<ProductViewModel>(
+                products.Where(p => p.Category == category)
+            );
+        }
+
+        public string ProductsAsText
+        {
+            get => JsonSerializer.Serialize<List<ProductViewModel>>(Products.ToList());
+            set
+            {
+                Products = new ObservableCollection<ProductViewModel>(JsonSerializer.Deserialize<List<ProductViewModel>>(value));
+            }
+        }
+
+#nullable enable
+        public string? Name => null;
+        public string? Category => null;
+#nullable disable
+
+        public void Reset()
+        {
+            Categories = new ObservableCollection<string>(
             new List<string>(new string[] {
                 "All"
                 ,"Platter"
@@ -21,24 +108,7 @@ namespace maui_sushi_app.Pages
                 //,"Poke Bowl & Chirashi"
             }));
 
-        public ObservableCollection<string> Categories => categories;
-
-#nullable enable
-        private string? selectedCategory = null;
-        public string? SelectedCategory
-#nullable disable
-        {
-            get => selectedCategory;
-            set
-            {
-                if (selectedCategory == value) return;
-                selectedCategory = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCategory)));
-                Products = GetProductsByCategory(selectedCategory);
-            }
-        }
-
-        private ObservableCollection<ProductViewModel> allProducts = ParseProducts(
+            ProductsAsText =
 """
 [
     {"Category":"Platter","Name":"Chef's Favourite Platter"},
@@ -112,56 +182,9 @@ namespace maui_sushi_app.Pages
     {"Category":"Sashimi & Salad","Name":"Abalone Salad"},
     {"Category":"Sashimi & Salad","Name":"Octopus Salad"}
 ]
-""");
+""";
 
-        public ObservableCollection<ProductViewModel> AllProducts
-        {
-            get => allProducts;
-            set
-            {
-                if (allProducts == value) return;
-                allProducts = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AllProducts)));
-            }
-        }
-
-        private ObservableCollection<ProductViewModel> products = new ObservableCollection<ProductViewModel>();
-        public ObservableCollection<ProductViewModel> Products
-        {
-            get => products;
-            set
-            {
-                products = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Products)));
-            }
-        }
-
-#nullable enable
-        public ObservableCollection<ProductViewModel> GetProductsByCategory(string? category)
-#nullable disable
-        {
-            if ((category is null) || (category == "All")) return allProducts;
-            return new ObservableCollection<ProductViewModel>(allProducts.Where(p => p.Category == category));
-        }
-
-        public void LoadProductsFromText(string json)
-        {
-            AllProducts = ParseProducts(json);
-        }
-
-        static public ObservableCollection<ProductViewModel> ParseProducts(string json)
-        {
-            return new ObservableCollection<ProductViewModel>(JsonSerializer.Deserialize<List<ProductViewModel>>(json));
-        }
-
-#nullable enable
-        public string? Name => null;
-        public string? Category => null;
-#nullable disable
-
-        public MainViewModel()
-        {
-            Products = GetProductsByCategory(SelectedCategory);
+            SelectedCategory = "All";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

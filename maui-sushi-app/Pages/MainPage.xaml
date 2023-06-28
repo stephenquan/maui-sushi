@@ -36,6 +36,6 @@
                   FontAttributes="Bold"/>
         <ListView Grid.Row="3"
                   ItemTemplate="{StaticResource productTemplate}"
-                  ItemsSource="{Binding Products}"/>
+                  ItemsSource="{Binding SelectedProducts}"/>
     </Grid>
 </ContentPage>
