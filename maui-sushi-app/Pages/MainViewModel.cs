@@ -38,7 +38,6 @@ namespace maui_sushi_app.Pages
                 selectedCategory = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCategory)));
                 Products = GetProductsByCategory(SelectedCategory);
-                ProductsFocused = true;
                 SelectedProduct = Products.Count > 0 ? Products[Products.Count - 1] : null;
             }
         }

@@ -24,7 +24,7 @@
     </ContentPage.Resources>
     <Grid HorizontalOptions="Fill"
           VerticalOptions="Fill"
-          RowDefinitions="Auto,*,Auto,*">
+          RowDefinitions="Auto,150,Auto,*">
         <Label    Text="Select Category"
                   FontAttributes="Bold"/>
         <ListView Grid.Row="1"
@@ -34,7 +34,8 @@
         <Label    Grid.Row="2"
                   Text="Products"
                   FontAttributes="Bold"/>
-        <ListView Grid.Row="3"
+        <ListView x:Name="ProductListView"
+                  Grid.Row="3"
                   ItemTemplate="{StaticResource productTemplate}"
                   ItemsSource="{Binding Products}"
                   SelectedItem="{Binding SelectedProduct,Mode=TwoWay}"/>
